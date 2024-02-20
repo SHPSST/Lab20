@@ -20,21 +20,70 @@ string toUpperStr(string x){
     return y;
 }
 
-void importDataFromFile(){
-
+void importDataFromFile(string filename, vector<string> &names, vector<int> &scores, vector<char> &grades) {
+    string line;
+    ifstream source;
+    source.open(filename);
+    while (getline(source, line)) {
+        char name[100];
+        int score1, score2, score3;
+        const char *Z=line.c_str();
+        sscanf(Z, "%[^:]: %d %d %d", name, &score1, &score2, &score3);
+        int totalScore = score1 + score2 + score3;
+        names.push_back(string(name));
+        scores.push_back(totalScore);
+        grades.push_back(score2grade(int(totalScore)));
+    }
 }
 
-void getCommand(){
+void getCommand(string &command, string &arguments) {
+    string input;
+    cout << "Please input your command: ";
+    getline(cin, input);
 
+    unsigned int Pos = input.find_first_of(' ');
+    if (Pos != 999999999) {
+        command = input.substr(0, Pos);
+        arguments = input.substr(Pos + 1);
+    } else {
+        command = input;
+        arguments = "";
+    }
 }
 
-void searchName(){
 
+void searchName(vector<string> names, vector<int> scores, vector<char> grades, string searchName) {
+    bool found = false;
+    cout << "---------------------------------" << "\n";
+    for (int index = 0; index < int(names.size()); index++) {
+        if (toUpperStr(names.at(index)) == toUpperStr(searchName)) {
+            cout << names.at(index) << "'s score = " << scores.at(index) << "\n";  
+            cout << names.at(index) << "'s grade = " << grades.at(index) << "\n";
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "Cannot found." << "\n";
+    }
+    cout << "---------------------------------" << "\n";
 }
 
-void searchGrade(){
 
+void searchGrade(vector<string> names, vector<int> scores, vector<char> grades, string targetGrade) {
+    bool found = false;
+    cout << "---------------------------------" << "\n";
+    for (int index = 0; index < int(names.size()); index++) {
+        if (grades.at(index) == targetGrade[0]) {
+            cout << names.at(index) << " (" << scores.at(index) << ")" << "\n";
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "Cannot found." << "\n";
+    }
+    cout << "---------------------------------" << "\n";
 }
+
 
 
 int main(){
